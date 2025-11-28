@@ -11,9 +11,7 @@
       "resizeMode": "contain",
       "backgroundColor": "#1E3A5F"
     },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
+    "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.banking.superapp",
@@ -24,19 +22,18 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/icon.png",
+        "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#1E3A5F"
       },
       "package": "com.banking.superapp",
       "permissions": [
         "android.permission.USE_BIOMETRIC",
         "android.permission.USE_FINGERPRINT",
-        "android.permission.CAMERA",
-        "android.permission.RECORD_AUDIO"
+        "android.permission.CAMERA"
       ]
     },
     "web": {
-      "favicon": "./assets/icon.png",
+      "favicon": "./assets/favicon.png",
       "bundler": "metro"
     },
     "plugins": [
@@ -54,11 +51,8 @@
       ]
     ],
     "extra": {
-      "apiBaseUrl": "https://d5e161e3d68b.ngrok-free.app/api/v1",
-      "socketUrl": "ws://10.202.227.229:5000",
-      "eas": {
-        "projectId": "009a0e72-eb64-4d7c-824b-0cd475188907"
-      }
+      "apiBaseUrl": "https://136.111.35.4:5000/api/v1",
+      "socketUrl": "wss://136.111.35.4:5000"
     }
   }
 }

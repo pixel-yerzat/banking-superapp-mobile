@@ -29,6 +29,18 @@ import { DepositsScreen } from '../screens/deposits';
 import { NotificationsScreen } from '../screens/notifications';
 import { SettingsScreen, SecurityScreen } from '../screens/settings';
 import { ChatScreen } from '../screens/chat';
+import { AnalyticsScreen } from '../screens/analytics';
+import { ProfileScreen } from '../screens/profile';
+import { QRScannerScreen } from '../screens/qr';
+import { TransactionDetailScreen } from '../screens/transactions';
+import { NewTransferScreen } from '../screens/transfers';
+import { FAQScreen } from '../screens/faq';
+import { TemplatesScreen, CreateTemplateScreen } from '../screens/templates';
+import { ProvidersScreen } from '../screens/providers';
+import { CreateCardScreen } from '../screens/cards';
+import { CreateAccountScreen } from '../screens/accounts';
+import { LoanApplicationScreen } from '../screens/loans';
+import { OpenDepositScreen } from '../screens/deposits';
 
 // Placeholder screens
 const PlaceholderScreen = ({ route }) => (
@@ -56,10 +68,10 @@ const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeMain" component={HomeScreen} />
     <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
-    <Stack.Screen name="TransactionDetail" component={PlaceholderScreen} />
+    <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
-    <Stack.Screen name="QRScanner" component={PlaceholderScreen} />
-    <Stack.Screen name="NewTransfer" component={PlaceholderScreen} />
+    <Stack.Screen name="QRScanner" component={QRScannerScreen} />
+    <Stack.Screen name="NewTransfer" component={NewTransferScreen} />
   </Stack.Navigator>
 );
 
@@ -68,7 +80,7 @@ const AccountsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="AccountsList" component={AccountsListScreen} />
     <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
-    <Stack.Screen name="CreateAccount" component={PlaceholderScreen} />
+    <Stack.Screen name="CreateAccount" component={CreateAccountScreen} />
   </Stack.Navigator>
 );
 
@@ -77,7 +89,7 @@ const CardsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="CardsList" component={CardsListScreen} />
     <Stack.Screen name="CardDetail" component={PlaceholderScreen} />
-    <Stack.Screen name="CreateCard" component={PlaceholderScreen} />
+    <Stack.Screen name="CreateCard" component={CreateCardScreen} />
   </Stack.Navigator>
 );
 
@@ -85,9 +97,10 @@ const CardsStack = () => (
 const TransfersStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="TransfersList" component={TransfersScreen} />
-    <Stack.Screen name="NewTransfer" component={PlaceholderScreen} />
-    <Stack.Screen name="Templates" component={PlaceholderScreen} />
-    <Stack.Screen name="Providers" component={PlaceholderScreen} />
+    <Stack.Screen name="NewTransfer" component={NewTransferScreen} />
+    <Stack.Screen name="Templates" component={TemplatesScreen} />
+    <Stack.Screen name="CreateTemplate" component={CreateTemplateScreen} />
+    <Stack.Screen name="Providers" component={ProvidersScreen} />
   </Stack.Navigator>
 );
 
@@ -98,23 +111,24 @@ const MoreStack = () => (
     <Stack.Screen name="Loans" component={LoansScreen} />
     <Stack.Screen name="LoanDetail" component={PlaceholderScreen} />
     <Stack.Screen name="LoanCalculator" component={LoanCalculatorScreen} />
-    <Stack.Screen name="LoanApplication" component={PlaceholderScreen} />
+    <Stack.Screen name="LoanApplication" component={LoanApplicationScreen} />
     <Stack.Screen name="Deposits" component={DepositsScreen} />
     <Stack.Screen name="DepositDetail" component={PlaceholderScreen} />
     <Stack.Screen name="DepositCalculator" component={PlaceholderScreen} />
-    <Stack.Screen name="OpenDeposit" component={PlaceholderScreen} />
-    <Stack.Screen name="Analytics" component={PlaceholderScreen} />
+    <Stack.Screen name="OpenDeposit" component={OpenDepositScreen} />
+    <Stack.Screen name="Analytics" component={AnalyticsScreen} />
     <Stack.Screen name="Settings" component={SettingsScreen} />
-    <Stack.Screen name="Profile" component={PlaceholderScreen} />
+    <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Security" component={SecurityScreen} />
     <Stack.Screen name="NotificationSettings" component={PlaceholderScreen} />
     <Stack.Screen name="Chat" component={ChatScreen} />
-    <Stack.Screen name="FAQ" component={PlaceholderScreen} />
+    <Stack.Screen name="FAQ" component={FAQScreen} />
     <Stack.Screen name="Support" component={PlaceholderScreen} />
     <Stack.Screen name="About" component={PlaceholderScreen} />
-    <Stack.Screen name="Templates" component={PlaceholderScreen} />
+    <Stack.Screen name="Templates" component={TemplatesScreen} />
+    <Stack.Screen name="CreateTemplate" component={CreateTemplateScreen} />
     <Stack.Screen name="AutoPayments" component={PlaceholderScreen} />
-    <Stack.Screen name="Providers" component={PlaceholderScreen} />
+    <Stack.Screen name="Providers" component={ProvidersScreen} />
   </Stack.Navigator>
 );
 
