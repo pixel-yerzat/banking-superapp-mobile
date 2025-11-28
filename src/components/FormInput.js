@@ -1,13 +1,13 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
 import {
   StyleSheet,
   View,
   Text,
   TextInput,
   TouchableOpacity,
-} from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
-import { colors, spacing, borderRadius, typography } from '../theme/colors';
+} from "react-native";
+import { Ionicons } from "@expo/vector-icons";
+import { colors, spacing, borderRadius, typography } from "../theme/colors";
 
 const FormInput = ({
   label,
@@ -17,8 +17,8 @@ const FormInput = ({
   error,
   helperText,
   secureTextEntry = false,
-  keyboardType = 'default',
-  autoCapitalize = 'none',
+  keyboardType = "default",
+  autoCapitalize = "none",
   autoCorrect = false,
   editable = true,
   multiline = false,
@@ -56,7 +56,7 @@ const FormInput = ({
           {required && <Text style={styles.required}> *</Text>}
         </Text>
       )}
-      
+
       <View
         style={[
           styles.inputContainer,
@@ -65,8 +65,16 @@ const FormInput = ({
           multiline && styles.multilineContainer,
         ]}
       >
-        {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
-        
+        {leftIcon && (
+          <View style={styles.leftIcon}>
+            {React.isValidElement(leftIcon) ? (
+              leftIcon
+            ) : (
+              <Text style={styles.iconText}>{String(leftIcon)}</Text>
+            )}
+          </View>
+        )}
+
         <TextInput
           style={[
             styles.input,
@@ -91,31 +99,35 @@ const FormInput = ({
           onBlur={handleBlur}
           {...props}
         />
-        
+
         {secureTextEntry && (
           <TouchableOpacity
             style={styles.rightIcon}
             onPress={togglePasswordVisibility}
           >
             <Ionicons
-              name={isPasswordVisible ? 'eye-off-outline' : 'eye-outline'}
+              name={isPasswordVisible ? "eye-off-outline" : "eye-outline"}
               size={20}
               color={colors.gray500}
             />
           </TouchableOpacity>
         )}
-        
+
         {rightIcon && !secureTextEntry && (
           <TouchableOpacity
             style={styles.rightIcon}
             onPress={onRightIconPress}
             disabled={!onRightIconPress}
           >
-            {rightIcon}
+            {React.isValidElement(rightIcon) ? (
+              rightIcon
+            ) : (
+              <Text style={styles.iconText}>{String(rightIcon)}</Text>
+            )}
           </TouchableOpacity>
         )}
       </View>
-      
+
       {(error || helperText) && (
         <Text style={[styles.helperText, error && styles.errorText]}>
           {error || helperText}
@@ -131,7 +143,7 @@ const styles = StyleSheet.create({
   },
   label: {
     ...typography.body2,
-    fontWeight: '500',
+    fontWeight: "500",
     color: colors.textPrimary,
     marginBottom: spacing.xs,
   },
@@ -139,8 +151,8 @@ const styles = StyleSheet.create({
     color: colors.error,
   },
   inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     borderWidth: 1.5,
     borderRadius: borderRadius.md,
     backgroundColor: colors.white,
@@ -151,7 +163,7 @@ const styles = StyleSheet.create({
   },
   multilineContainer: {
     minHeight: 100,
-    alignItems: 'flex-start',
+    alignItems: "flex-start",
   },
   input: {
     flex: 1,
@@ -167,7 +179,7 @@ const styles = StyleSheet.create({
     paddingRight: spacing.xs,
   },
   multilineInput: {
-    textAlignVertical: 'top',
+    textAlignVertical: "top",
     paddingTop: spacing.sm,
   },
   leftIcon: {
@@ -176,6 +188,10 @@ const styles = StyleSheet.create({
   rightIcon: {
     paddingRight: spacing.md,
     paddingVertical: spacing.sm,
+  },
+  iconText: {
+    ...typography.body1,
+    color: colors.textPrimary,
   },
   helperText: {
     ...typography.caption,

@@ -1,14 +1,17 @@
-import React, { useEffect } from 'react';
-import { View, Text } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { Ionicons } from '@expo/vector-icons';
-import { useSelector } from 'react-redux';
-import { selectIsAuthenticated, selectIsLoading } from '../store/slices/authSlice';
-import { selectUnreadNotifications } from '../store/slices/uiSlice';
-import { useAuth, useSocket } from '../hooks';
-import { colors, typography } from '../theme/colors';
+import React, { useEffect } from "react";
+import { View, Text } from "react-native";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { Ionicons } from "@expo/vector-icons";
+import { useSelector } from "react-redux";
+import {
+  selectIsAuthenticated,
+  selectIsLoading,
+} from "../store/slices/authSlice";
+import { selectUnreadNotifications } from "../store/slices/uiSlice";
+import { useAuth, useSocket } from "../hooks";
+import { colors, typography } from "../theme/colors";
 
 // Auth Screens
 import {
@@ -16,37 +19,69 @@ import {
   LoginScreen,
   RegisterScreen,
   OTPVerificationScreen,
-} from '../screens/auth';
+  ForgotPasswordScreen,
+} from "../screens/auth";
 
 // Main Screens
-import HomeScreen from '../screens/HomeScreen';
-import { AccountsListScreen, AccountDetailScreen } from '../screens/accounts';
-import { CardsListScreen } from '../screens/cards';
-import { TransfersScreen } from '../screens/transfers';
-import { MoreScreen } from '../screens/more';
-import { LoansScreen, LoanCalculatorScreen } from '../screens/loans';
-import { DepositsScreen } from '../screens/deposits';
-import { NotificationsScreen } from '../screens/notifications';
-import { SettingsScreen, SecurityScreen } from '../screens/settings';
-import { ChatScreen } from '../screens/chat';
-import { AnalyticsScreen } from '../screens/analytics';
-import { ProfileScreen } from '../screens/profile';
-import { QRScannerScreen } from '../screens/qr';
-import { TransactionDetailScreen } from '../screens/transactions';
-import { NewTransferScreen } from '../screens/transfers';
-import { FAQScreen } from '../screens/faq';
-import { TemplatesScreen, CreateTemplateScreen } from '../screens/templates';
-import { ProvidersScreen } from '../screens/providers';
-import { CreateCardScreen } from '../screens/cards';
-import { CreateAccountScreen } from '../screens/accounts';
-import { LoanApplicationScreen } from '../screens/loans';
-import { OpenDepositScreen } from '../screens/deposits';
+import HomeScreen from "../screens/HomeScreen";
+import {
+  AccountsListScreen,
+  AccountDetailScreen,
+  CreateAccountScreen,
+} from "../screens/accounts";
+import {
+  CardsListScreen,
+  CreateCardScreen,
+  CardDetailScreen,
+} from "../screens/cards";
+import { TransfersScreen, NewTransferScreen } from "../screens/transfers";
+import { MoreScreen } from "../screens/more";
+import {
+  LoansScreen,
+  LoanCalculatorScreen,
+  LoanApplicationScreen,
+  LoanDetailScreen,
+} from "../screens/loans";
+import {
+  DepositsScreen,
+  OpenDepositScreen,
+  DepositDetailScreen,
+} from "../screens/deposits";
+import {
+  NotificationsScreen,
+  NotificationSettingsScreen,
+} from "../screens/notifications";
+import { SettingsScreen, SecurityScreen } from "../screens/settings";
+import { ChatScreen } from "../screens/chat";
+import { AnalyticsScreen } from "../screens/analytics";
+import { ProfileScreen } from "../screens/profile";
+import { QRScannerScreen } from "../screens/qr";
+import { TransactionDetailScreen } from "../screens/transactions";
+import { FAQScreen } from "../screens/faq";
+import { TemplatesScreen, CreateTemplateScreen } from "../screens/templates";
+import { ProvidersScreen } from "../screens/providers";
+import { AutoPaymentsScreen } from "../screens/autopayments";
+import { AboutScreen } from "../screens/about";
+import { SupportScreen } from "../screens/support";
 
 // Placeholder screens
 const PlaceholderScreen = ({ route }) => (
-  <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: colors.background }}>
-    <Text style={{ ...typography.h3, color: colors.textPrimary }}>{route.name}</Text>
-    <Text style={{ ...typography.body2, color: colors.textSecondary, marginTop: 8 }}>Coming Soon</Text>
+  <View
+    style={{
+      flex: 1,
+      justifyContent: "center",
+      alignItems: "center",
+      backgroundColor: colors.background,
+    }}
+  >
+    <Text style={{ ...typography.h3, color: colors.textPrimary }}>
+      {route.name}
+    </Text>
+    <Text
+      style={{ ...typography.body2, color: colors.textSecondary, marginTop: 8 }}
+    >
+      Coming Soon
+    </Text>
   </View>
 );
 
@@ -59,7 +94,7 @@ const AuthStack = () => (
     <Stack.Screen name="Login" component={LoginScreen} />
     <Stack.Screen name="Register" component={RegisterScreen} />
     <Stack.Screen name="OTPVerification" component={OTPVerificationScreen} />
-    <Stack.Screen name="ForgotPassword" component={PlaceholderScreen} />
+    <Stack.Screen name="ForgotPassword" component={ForgotPasswordScreen} />
   </Stack.Navigator>
 );
 
@@ -68,7 +103,10 @@ const HomeStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="HomeMain" component={HomeScreen} />
     <Stack.Screen name="AccountDetail" component={AccountDetailScreen} />
-    <Stack.Screen name="TransactionDetail" component={TransactionDetailScreen} />
+    <Stack.Screen
+      name="TransactionDetail"
+      component={TransactionDetailScreen}
+    />
     <Stack.Screen name="Notifications" component={NotificationsScreen} />
     <Stack.Screen name="QRScanner" component={QRScannerScreen} />
     <Stack.Screen name="NewTransfer" component={NewTransferScreen} />
@@ -88,8 +126,10 @@ const AccountsStack = () => (
 const CardsStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="CardsList" component={CardsListScreen} />
-    <Stack.Screen name="CardDetail" component={PlaceholderScreen} />
+    <Stack.Screen name="CardDetail" component={CardDetailScreen} />
     <Stack.Screen name="CreateCard" component={CreateCardScreen} />
+    {/* Placeholder for ChangePIN screen triggered from CardDetail */}
+    <Stack.Screen name="ChangePIN" component={PlaceholderScreen} />
   </Stack.Navigator>
 );
 
@@ -101,6 +141,8 @@ const TransfersStack = () => (
     <Stack.Screen name="Templates" component={TemplatesScreen} />
     <Stack.Screen name="CreateTemplate" component={CreateTemplateScreen} />
     <Stack.Screen name="Providers" component={ProvidersScreen} />
+    {/* Provider payment screen (not implemented yet) */}
+    <Stack.Screen name="ProviderPayment" component={PlaceholderScreen} />
   </Stack.Navigator>
 );
 
@@ -109,60 +151,70 @@ const MoreStack = () => (
   <Stack.Navigator screenOptions={{ headerShown: false }}>
     <Stack.Screen name="MoreMain" component={MoreScreen} />
     <Stack.Screen name="Loans" component={LoansScreen} />
-    <Stack.Screen name="LoanDetail" component={PlaceholderScreen} />
+    <Stack.Screen name="LoanDetail" component={LoanDetailScreen} />
     <Stack.Screen name="LoanCalculator" component={LoanCalculatorScreen} />
     <Stack.Screen name="LoanApplication" component={LoanApplicationScreen} />
     <Stack.Screen name="Deposits" component={DepositsScreen} />
-    <Stack.Screen name="DepositDetail" component={PlaceholderScreen} />
+    <Stack.Screen name="DepositDetail" component={DepositDetailScreen} />
     <Stack.Screen name="DepositCalculator" component={PlaceholderScreen} />
     <Stack.Screen name="OpenDeposit" component={OpenDepositScreen} />
     <Stack.Screen name="Analytics" component={AnalyticsScreen} />
     <Stack.Screen name="Settings" component={SettingsScreen} />
     <Stack.Screen name="Profile" component={ProfileScreen} />
     <Stack.Screen name="Security" component={SecurityScreen} />
-    <Stack.Screen name="NotificationSettings" component={PlaceholderScreen} />
+    <Stack.Screen
+      name="NotificationSettings"
+      component={NotificationSettingsScreen}
+    />
     <Stack.Screen name="Chat" component={ChatScreen} />
     <Stack.Screen name="FAQ" component={FAQScreen} />
-    <Stack.Screen name="Support" component={PlaceholderScreen} />
-    <Stack.Screen name="About" component={PlaceholderScreen} />
+    <Stack.Screen name="Support" component={SupportScreen} />
+    <Stack.Screen name="About" component={AboutScreen} />
     <Stack.Screen name="Templates" component={TemplatesScreen} />
     <Stack.Screen name="CreateTemplate" component={CreateTemplateScreen} />
-    <Stack.Screen name="AutoPayments" component={PlaceholderScreen} />
+    <Stack.Screen name="AutoPayments" component={AutoPaymentsScreen} />
     <Stack.Screen name="Providers" component={ProvidersScreen} />
+    {/* Security / account management screens (placeholders) */}
+    <Stack.Screen name="ChangePassword" component={PlaceholderScreen} />
+    <Stack.Screen name="SetupPIN" component={PlaceholderScreen} />
+    <Stack.Screen name="ChangePIN" component={PlaceholderScreen} />
+    <Stack.Screen name="Enable2FA" component={PlaceholderScreen} />
   </Stack.Navigator>
 );
 
 // Tab Navigator
 const AppTabs = () => {
   const unreadNotifications = useSelector(selectUnreadNotifications);
-  
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
         tabBarIcon: ({ focused, color, size }) => {
           let iconName;
-          
+
           switch (route.name) {
-            case 'Home':
-              iconName = focused ? 'home' : 'home-outline';
+            case "Home":
+              iconName = focused ? "home" : "home-outline";
               break;
-            case 'Accounts':
-              iconName = focused ? 'wallet' : 'wallet-outline';
+            case "Accounts":
+              iconName = focused ? "wallet" : "wallet-outline";
               break;
-            case 'Cards':
-              iconName = focused ? 'card' : 'card-outline';
+            case "Cards":
+              iconName = focused ? "card" : "card-outline";
               break;
-            case 'Transfers':
-              iconName = focused ? 'swap-horizontal' : 'swap-horizontal-outline';
+            case "Transfers":
+              iconName = focused
+                ? "swap-horizontal"
+                : "swap-horizontal-outline";
               break;
-            case 'More':
-              iconName = focused ? 'menu' : 'menu-outline';
+            case "More":
+              iconName = focused ? "menu" : "menu-outline";
               break;
             default:
-              iconName = 'ellipse';
+              iconName = "ellipse";
           }
-          
+
           return <Ionicons name={iconName} size={size} color={color} />;
         },
         tabBarActiveTintColor: colors.primary,
@@ -180,30 +232,30 @@ const AppTabs = () => {
         },
       })}
     >
-      <Tab.Screen 
-        name="Home" 
+      <Tab.Screen
+        name="Home"
         component={HomeStack}
-        options={{ tabBarLabel: 'Главная' }}
+        options={{ tabBarLabel: "Главная" }}
       />
-      <Tab.Screen 
-        name="Accounts" 
+      <Tab.Screen
+        name="Accounts"
         component={AccountsStack}
-        options={{ tabBarLabel: 'Счета' }}
+        options={{ tabBarLabel: "Счета" }}
       />
-      <Tab.Screen 
-        name="Cards" 
+      <Tab.Screen
+        name="Cards"
         component={CardsStack}
-        options={{ tabBarLabel: 'Карты' }}
+        options={{ tabBarLabel: "Карты" }}
       />
-      <Tab.Screen 
-        name="Transfers" 
+      <Tab.Screen
+        name="Transfers"
         component={TransfersStack}
-        options={{ tabBarLabel: 'Переводы' }}
+        options={{ tabBarLabel: "Переводы" }}
       />
-      <Tab.Screen 
-        name="More" 
+      <Tab.Screen
+        name="More"
         component={MoreStack}
-        options={{ tabBarLabel: 'Ещё' }}
+        options={{ tabBarLabel: "Ещё" }}
       />
     </Tab.Navigator>
   );
@@ -214,7 +266,7 @@ const RootNavigator = () => {
   const isAuthenticated = useSelector(selectIsAuthenticated);
   const isLoading = useSelector(selectIsLoading);
   const { initialize } = useAuth();
-  
+
   // Initialize socket connection when authenticated
   useSocket();
 

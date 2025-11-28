@@ -1,6 +1,6 @@
 // API Configuration
-export const API_BASE_URL = "http://136.111.35.4:5000/api/v1";
-export const SOCKET_URL = "ws://136.111.35.4:5000";
+export const API_BASE_URL = "http://192.168.43.82:5000/api/v1";
+export const SOCKET_URL = "ws://192.168.43.82:5000";
 
 // Storage Keys
 export const STORAGE_KEYS = {

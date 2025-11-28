@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   StyleSheet,
   View,
@@ -6,13 +6,13 @@ import {
   TouchableOpacity,
   Dimensions,
   Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { Camera } from 'expo-camera';
-import { colors, spacing, typography, borderRadius } from '../../theme/colors';
+} from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import * as ExpoCamera from "expo-camera";
+import { colors, spacing, typography, borderRadius } from "../../theme/colors";
 
-const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get('window');
+const { width: SCREEN_WIDTH, height: SCREEN_HEIGHT } = Dimensions.get("window");
 const SCAN_AREA_SIZE = SCREEN_WIDTH * 0.7;
 
 const QRScannerScreen = ({ navigation }) => {
@@ -26,7 +26,7 @@ const QRScannerScreen = ({ navigation }) => {
 
   const requestCameraPermission = async () => {
     const { status } = await Camera.requestCameraPermissionsAsync();
-    setHasPermission(status === 'granted');
+    setHasPermission(status === "granted");
   };
 
   const handleBarCodeScanned = ({ type, data }) => {
@@ -37,15 +37,15 @@ const QRScannerScreen = ({ navigation }) => {
     try {
       // Attempt to parse as JSON (for payment QR codes)
       const qrData = JSON.parse(data);
-      
-      if (qrData.type === 'payment') {
-        navigation.navigate('NewTransfer', {
+
+      if (qrData.type === "payment") {
+        navigation.navigate("NewTransfer", {
           recipient: qrData.recipient,
           amount: qrData.amount,
           description: qrData.description,
         });
-      } else if (qrData.type === 'contact') {
-        navigation.navigate('NewTransfer', {
+      } else if (qrData.type === "contact") {
+        navigation.navigate("NewTransfer", {
           recipientPhone: qrData.phone,
           recipientName: qrData.name,
         });
@@ -53,18 +53,17 @@ const QRScannerScreen = ({ navigation }) => {
     } catch {
       // If not JSON, treat as phone number or account
       if (data.match(/^\+?[0-9]{10,12}$/)) {
-        navigation.navigate('NewTransfer', { recipientPhone: data });
+        navigation.navigate("NewTransfer", { recipientPhone: data });
       } else if (data.match(/^KZ[0-9]{18}$/)) {
-        navigation.navigate('NewTransfer', { recipientAccount: data });
+        navigation.navigate("NewTransfer", { recipientAccount: data });
       } else {
-        Alert.alert(
-          'QR код распознан',
-          `Содержимое: ${data}`,
-          [
-            { text: 'OK', onPress: () => setScanned(false) },
-            { text: 'Перевести', onPress: () => navigation.navigate('NewTransfer', { qrData: data }) },
-          ]
-        );
+        Alert.alert("QR код распознан", `Содержимое: ${data}`, [
+          { text: "OK", onPress: () => setScanned(false) },
+          {
+            text: "Перевести",
+            onPress: () => navigation.navigate("NewTransfer", { qrData: data }),
+          },
+        ]);
       }
     }
   };
@@ -72,6 +71,16 @@ const QRScannerScreen = ({ navigation }) => {
   const toggleFlash = () => {
     setFlashOn(!flashOn);
   };
+
+  // Resolve camera component and flash mode constants safely — different
+  // versions of expo-camera export these differently.
+  const ResolvedCamera = ExpoCamera.Camera || ExpoCamera.default || ExpoCamera;
+  const FLASH_MODE =
+    ExpoCamera.FlashMode ||
+    (ResolvedCamera &&
+      ResolvedCamera.Constants &&
+      ResolvedCamera.Constants.FlashMode) ||
+    null;
 
   if (hasPermission === null) {
     return (
@@ -87,7 +96,10 @@ const QRScannerScreen = ({ navigation }) => {
     return (
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
-          <TouchableOpacity onPress={() => navigation.goBack()} style={styles.backButton}>
+          <TouchableOpacity
+            onPress={() => navigation.goBack()}
+            style={styles.backButton}
+          >
             <Ionicons name="close" size={28} color={colors.white} />
           </TouchableOpacity>
         </View>
@@ -97,7 +109,10 @@ const QRScannerScreen = ({ navigation }) => {
           <Text style={styles.permissionText}>
             Для сканирования QR-кодов необходим доступ к камере
           </Text>
-          <TouchableOpacity style={styles.permissionButton} onPress={requestCameraPermission}>
+          <TouchableOpacity
+            style={styles.permissionButton}
+            onPress={requestCameraPermission}
+          >
             <Text style={styles.permissionButtonText}>Предоставить доступ</Text>
           </TouchableOpacity>
         </View>
@@ -107,12 +122,14 @@ const QRScannerScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Camera
+      <ResolvedCamera
         style={StyleSheet.absoluteFillObject}
         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-        flashMode={flashOn ? Camera.Constants.FlashMode.torch : Camera.Constants.FlashMode.off}
+        {...(FLASH_MODE
+          ? { flashMode: flashOn ? FLASH_MODE.torch : FLASH_MODE.off }
+          : {})}
         barCodeScannerSettings={{
-          barCodeTypes: ['qr'],
+          barCodeTypes: ["qr"],
         }}
       />
 
@@ -120,15 +137,21 @@ const QRScannerScreen = ({ navigation }) => {
       <View style={styles.overlay}>
         {/* Top */}
         <View style={styles.overlayTop}>
-          <SafeAreaView edges={['top']}>
+          <SafeAreaView edges={["top"]}>
             <View style={styles.header}>
-              <TouchableOpacity onPress={() => navigation.goBack()} style={styles.headerButton}>
+              <TouchableOpacity
+                onPress={() => navigation.goBack()}
+                style={styles.headerButton}
+              >
                 <Ionicons name="close" size={28} color={colors.white} />
               </TouchableOpacity>
               <Text style={styles.headerTitle}>Сканировать QR</Text>
-              <TouchableOpacity onPress={toggleFlash} style={styles.headerButton}>
+              <TouchableOpacity
+                onPress={toggleFlash}
+                style={styles.headerButton}
+              >
                 <Ionicons
-                  name={flashOn ? 'flash' : 'flash-outline'}
+                  name={flashOn ? "flash" : "flash-outline"}
                   size={24}
                   color={colors.white}
                 />
@@ -160,14 +183,22 @@ const QRScannerScreen = ({ navigation }) => {
           <View style={styles.actionsContainer}>
             <TouchableOpacity style={styles.actionButton}>
               <View style={styles.actionIcon}>
-                <Ionicons name="images-outline" size={24} color={colors.white} />
+                <Ionicons
+                  name="images-outline"
+                  size={24}
+                  color={colors.white}
+                />
               </View>
               <Text style={styles.actionText}>Из галереи</Text>
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.actionButton}>
               <View style={styles.actionIcon}>
-                <Ionicons name="qr-code-outline" size={24} color={colors.white} />
+                <Ionicons
+                  name="qr-code-outline"
+                  size={24}
+                  color={colors.white}
+                />
               </View>
               <Text style={styles.actionText}>Мой QR</Text>
             </TouchableOpacity>
@@ -189,11 +220,11 @@ const QRScannerScreen = ({ navigation }) => {
 };
 
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: '#000' },
+  container: { flex: 1, backgroundColor: "#000" },
   centerContent: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
+    justifyContent: "center",
+    alignItems: "center",
     paddingHorizontal: spacing.xl,
   },
   permissionTitle: {
@@ -205,7 +236,7 @@ const styles = StyleSheet.create({
   permissionText: {
     ...typography.body2,
     color: colors.gray400,
-    textAlign: 'center',
+    textAlign: "center",
   },
   permissionButton: {
     backgroundColor: colors.primary,
@@ -217,45 +248,45 @@ const styles = StyleSheet.create({
   permissionButtonText: {
     ...typography.body1,
     color: colors.white,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   overlay: { ...StyleSheet.absoluteFillObject },
   overlayTop: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
     paddingHorizontal: spacing.lg,
     paddingVertical: spacing.md,
   },
   headerButton: {
     width: 44,
     height: 44,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   headerTitle: {
     ...typography.h4,
     color: colors.white,
   },
   overlayMiddle: {
-    flexDirection: 'row',
+    flexDirection: "row",
     height: SCAN_AREA_SIZE,
   },
   overlaySide: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: "rgba(0,0,0,0.6)",
   },
   scanArea: {
     width: SCAN_AREA_SIZE,
     height: SCAN_AREA_SIZE,
-    position: 'relative',
+    position: "relative",
   },
   corner: {
-    position: 'absolute',
+    position: "absolute",
     width: 24,
     height: 24,
     borderColor: colors.primary,
@@ -290,31 +321,31 @@ const styles = StyleSheet.create({
   },
   overlayBottom: {
     flex: 1,
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    alignItems: 'center',
+    backgroundColor: "rgba(0,0,0,0.6)",
+    alignItems: "center",
     paddingTop: spacing.xl,
   },
   instruction: {
     ...typography.body2,
     color: colors.white,
-    textAlign: 'center',
+    textAlign: "center",
     paddingHorizontal: spacing.xl,
   },
   actionsContainer: {
-    flexDirection: 'row',
+    flexDirection: "row",
     marginTop: spacing.xl,
     gap: spacing.xl,
   },
   actionButton: {
-    alignItems: 'center',
+    alignItems: "center",
   },
   actionIcon: {
     width: 56,
     height: 56,
     borderRadius: 28,
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: "rgba(255,255,255,0.2)",
+    alignItems: "center",
+    justifyContent: "center",
     marginBottom: spacing.sm,
   },
   actionText: {
@@ -322,8 +353,8 @@ const styles = StyleSheet.create({
     color: colors.white,
   },
   rescanButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     backgroundColor: colors.primary,
     paddingVertical: spacing.sm,
     paddingHorizontal: spacing.lg,

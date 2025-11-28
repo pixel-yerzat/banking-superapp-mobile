@@ -1,28 +1,26 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
+import { StyleSheet, View, Text, TouchableOpacity, Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
+import { Ionicons } from "@expo/vector-icons";
+import { Button, OTPInput } from "../../components";
 import {
-  StyleSheet,
-  View,
-  Text,
-  TouchableOpacity,
-  Alert,
-} from 'react-native';
-import { SafeAreaView } from 'react-native-safe-area-context';
-import { Ionicons } from '@expo/vector-icons';
-import { Button, OTPInput } from '../../components';
-import { useVerifyOtpMutation, useVerify2FAMutation, useSendOtpMutation } from '../../api';
-import { authService } from '../../services';
-import { useDispatch } from 'react-redux';
-import { setUser } from '../../store/slices/authSlice';
-import { colors, spacing, typography } from '../../theme/colors';
+  useVerifyOtpMutation,
+  useVerify2FAMutation,
+  useSendOtpMutation,
+} from "../../api";
+import { authService } from "../../services";
+import { useDispatch } from "react-redux";
+import { setUser } from "../../store/slices/authSlice";
+import { colors, spacing, typography } from "../../theme/colors";
 
 const OTPVerificationScreen = ({ navigation, route }) => {
   const { phone, type, userId } = route.params;
   const dispatch = useDispatch();
-  
-  const [otp, setOtp] = useState('');
+
+  const [otp, setOtp] = useState("");
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
-  
+
   const [verifyOtp, { isLoading: isVerifyingOtp }] = useVerifyOtpMutation();
   const [verify2FA, { isLoading: isVerifying2FA }] = useVerify2FAMutation();
   const [sendOtp, { isLoading: isSending }] = useSendOtpMutation();
@@ -42,8 +40,8 @@ const OTPVerificationScreen = ({ navigation, route }) => {
   const handleVerify = async (code) => {
     try {
       let result;
-      
-      if (type === '2fa') {
+
+      if (type === "2fa") {
         result = await verify2FA({ userId, code }).unwrap();
       } else {
         result = await verifyOtp({ phone, code }).unwrap();
@@ -60,38 +58,41 @@ const OTPVerificationScreen = ({ navigation, route }) => {
         } else {
           // Registration verification successful
           Alert.alert(
-            'Успешно',
-            'Регистрация завершена. Теперь вы можете войти.',
-            [{ text: 'OK', onPress: () => navigation.navigate('Login') }]
+            "Успешно",
+            "Регистрация завершена. Теперь вы можете войти.",
+            [{ text: "OK", onPress: () => navigation.navigate("Login") }]
           );
         }
       }
     } catch (error) {
-      Alert.alert('Ошибка', error.data?.message || 'Неверный код');
-      setOtp('');
+      Alert.alert("Ошибка", error.data?.message || "Неверный код");
+      setOtp("");
     }
   };
 
   const handleResend = async () => {
     try {
-      await sendOtp({ phone, type: 'sms' }).unwrap();
+      await sendOtp({ phone, type: "sms" }).unwrap();
       setTimer(60);
       setCanResend(false);
-      Alert.alert('Успешно', 'Код отправлен повторно');
+      Alert.alert("Успешно", "Код отправлен повторно");
     } catch (error) {
-      Alert.alert('Ошибка', error.data?.message || 'Не удалось отправить код');
+      Alert.alert("Ошибка", error.data?.message || "Не удалось отправить код");
     }
   };
 
   const formatTimer = (seconds) => {
     const mins = Math.floor(seconds / 60);
     const secs = seconds % 60;
-    return `${mins.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    return `${mins.toString().padStart(2, "0")}:${secs.toString().padStart(2, "0")}`;
   };
 
   const formatPhone = (phone) => {
-    if (!phone) return '';
-    return phone.replace(/(\+7)(\d{3})(\d{3})(\d{2})(\d{2})/, '$1 $2 *** ** $5');
+    if (!phone) return "";
+    return phone.replace(
+      /(\+7)(\d{3})(\d{3})(\d{2})(\d{2})/,
+      "$1 $2 *** ** $5"
+    );
   };
 
   const isLoading = isVerifyingOtp || isVerifying2FA;
@@ -112,14 +113,18 @@ const OTPVerificationScreen = ({ navigation, route }) => {
         {/* Icon */}
         <View style={styles.iconContainer}>
           <View style={styles.iconCircle}>
-            <Ionicons name="shield-checkmark" size={40} color={colors.primary} />
+            <Ionicons
+              name="shield-checkmark"
+              size={40}
+              color={colors.primary}
+            />
           </View>
         </View>
 
         {/* Title */}
         <Text style={styles.title}>Введите код</Text>
         <Text style={styles.subtitle}>
-          Код отправлен на номер{'\n'}
+          Код отправлен на номер{"\n"}
           <Text style={styles.phone}>{formatPhone(phone)}</Text>
         </Text>
 
@@ -129,7 +134,7 @@ const OTPVerificationScreen = ({ navigation, route }) => {
             length={6}
             value={otp}
             onChange={setOtp}
-            onComplete={handleVerify}
+            onComplete={() => {}}
             autoFocus
           />
         </View>
@@ -139,7 +144,7 @@ const OTPVerificationScreen = ({ navigation, route }) => {
           {canResend ? (
             <TouchableOpacity onPress={handleResend} disabled={isSending}>
               <Text style={styles.resendText}>
-                {isSending ? 'Отправка...' : 'Отправить код повторно'}
+                {isSending ? "Отправка..." : "Отправить код повторно"}
               </Text>
             </TouchableOpacity>
           ) : (
@@ -185,10 +190,10 @@ const styles = StyleSheet.create({
   },
   backButton: {
     padding: spacing.xs,
-    alignSelf: 'flex-start',
+    alignSelf: "flex-start",
   },
   iconContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginTop: spacing.xl,
     marginBottom: spacing.lg,
   },
@@ -197,31 +202,31 @@ const styles = StyleSheet.create({
     height: 80,
     borderRadius: 40,
     backgroundColor: `${colors.primary}15`,
-    alignItems: 'center',
-    justifyContent: 'center',
+    alignItems: "center",
+    justifyContent: "center",
   },
   title: {
     ...typography.h2,
     color: colors.textPrimary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: spacing.sm,
   },
   subtitle: {
     ...typography.body1,
     color: colors.textSecondary,
-    textAlign: 'center',
+    textAlign: "center",
     marginBottom: spacing.xl,
   },
   phone: {
     color: colors.textPrimary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   otpContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: spacing.lg,
   },
   resendContainer: {
-    alignItems: 'center',
+    alignItems: "center",
     marginBottom: spacing.xl,
   },
   timerText: {
@@ -231,13 +236,13 @@ const styles = StyleSheet.create({
   resendText: {
     ...typography.body2,
     color: colors.primary,
-    fontWeight: '600',
+    fontWeight: "600",
   },
   verifyButton: {
     marginBottom: spacing.md,
   },
   changeNumberButton: {
-    alignItems: 'center',
+    alignItems: "center",
     padding: spacing.sm,
   },
   changeNumberText: {
